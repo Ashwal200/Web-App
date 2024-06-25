@@ -16,6 +16,10 @@ app.use(express.static('public', {
 // Enable CORS for all origins
 app.use(cors());
 
+// Route to serve the index.html file from the build directory
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 const connectedClients = new Map(); // Map to track connected clients
 
