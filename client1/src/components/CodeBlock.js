@@ -12,16 +12,13 @@ const CodeBlock = () => {
     const { id } = useParams();
     const [code, setCode] = useState('');
     const [title, setTitle] = useState('');
-    const [role, setRole] = useState(null);
+    const [role, setRole] = useState(false);
     const [flag, setflag] = useState(true);
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (flag) {
-                    socket.on('role', (role) => {
-                        setRole(role);
-                        console.log(role)
-                    });
+                    setRole(true);
                     setflag(false);
                 }
                 const data = await DataBase.getCode(id);
@@ -59,7 +56,7 @@ const CodeBlock = () => {
             </Link>
             <div className="form-group-code">
                 <div className='head'> Code: {title}</div>
-                {role === 'writer' ? (
+                {role ? (
                     <>
                         <textarea className='textarea-code' id="code" value={code} onChange={(e) => { setCode(e.target.value); socket.emit('updatedCode', e.target.value); }} required />
                         <button onClick={handleSubmit} className="btn-submit-save"> Save </button>

@@ -16,13 +16,6 @@ app.use(express.static('public', {
 // Enable CORS for all origins
 app.use(cors());
 
-// // Serve static files from the React app
-// app.use(express.static(path.join(__dirname, 'client/build')));
-
-// // Serve the React app
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname + '/client/build/index.html'));
-// });
 
 const connectedClients = new Map(); // Map to track connected clients
 
@@ -37,14 +30,6 @@ io.on('connection', function(socket) {
         // For simplicity, we'll just associate the socket ID with the room name
         socket.join(room);
         console.log(`Client ${socket.id} joined room: ${room}`);
-
-        if (connectedClients.size === 0) {
-            io.emit("role", 'reader');
-            
-        } else {
-            io.emit("role", 'writer');
-            console.log("number :", connectedClients.size)
-        }
     });
 
     socket.on("updatedCode" , function(data) {
