@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "title": "Async Case",
+        "code": "async function fetchData() { const response = await fetch('https://api.example.com/data'); const data = await response.json(); console.log(data); }"
+    },
+    {
+        "id": 2,
+        "title": "Promise Example",
+        "code": "function fetchData() { fetch('https://api.example.com/data').then(response => response.json()).then(data => console.log(data)); }"
+    },
+    {
+        "id": 3,
+        "title": "Callback Function",
+        "code": "function fetchData(callback) { fetch('https://api.example.com/data').then(response => response.json()).then(data => callback(data)); }"
+    },
+    {
+        "id": 4,
+        "title": "Event Listener",
+        "code": "document.getElementById('myButton').addEventListener('click', () => { alert('Button clicked!'); });"
+    }
+]
