@@ -1,58 +1,65 @@
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const fs = require('fs');
+const app = require('express')();
+const express = require('express')
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const cors = require('cors'); // Import the cors middleware
 const path = require('path');
 
-const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
+// Serve static files with correct MIME types
+app.use(express.static('public', {
+    setHeaders: (res, path, stat) => {
+      if (path.endsWith('.css')) {
+        res.set('Content-Type', 'text/css');
+      }
+    }
+  }));
+// Enable CORS for all origins
+app.use(cors());
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
+// // Serve static files from the React app
+// app.use(express.static(path.join(__dirname, 'client/build')));
 
-// // Load code blocks from a JSON file
-// const codeBlocks = JSON.parse(fs.readFileSync('codeBlocks.json', 'utf8'));
-
-// // Endpoint to get code blocks
-// app.get('/api/codeblocks', (req, res) => {
-//     res.json(codeBlocks);
+// // Serve the React app
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname + '/client/build/index.html'));
 // });
 
-// Serve the React app
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/client/build/index.html'));
-});
+const connectedClients = new Map(); // Map to track connected clients
 
-io.on('connection', (socket) => {
-    console.log('New client connected');
+io.on('connection', function(socket) {
+    
+    // Store client information when a new client connects
+    connectedClients.set(socket.id, { id: socket.id });
 
-    socket.on('joinRoom', async (room) => {
+    socket.on('joinRoom', (room) => {
+        // Associate client's socket ID with the specified room
+        // You can store additional information about the client in the room object if needed
+        // For simplicity, we'll just associate the socket ID with the room name
         socket.join(room);
+        console.log(`Client ${socket.id} joined room: ${room}`);
 
-        // Check if this is the first visitor for the code block
-        if (!firstVisitors[room]) {
-            firstVisitors[room] = socket.id;
-            socket.emit('role', 'writer'); // Send 'writer' role to the first visitor
+        if (connectedClients.size === 0) {
+            io.emit("role", 'reader');
+            
         } else {
-            socket.emit('role', 'reader'); // Send 'reader' role to subsequent visitors
+            io.emit("role", 'writer');
+            console.log("number :", connectedClients.size)
         }
-
-        console.log(`Client joined room: ${room}`);
     });
 
-    socket.on('codeChange', (data) => {
-        const { room, code } = data;
-        socket.to(room).emit('codeUpdate', code);
-        console.log('Client change the code');
+    socket.on("updatedCode" , function(data) {
+        io.emit("newUpdatedCode" , data)
     });
 
     socket.on('disconnect', () => {
-        console.log('Client disconnected');
+        // Remove client from the tracking data structure when they disconnect
+        connectedClients.delete(socket.id);
+        console.log('Client disconnected:', socket.id);
     });
 });
 
 
-const PORT = process.env.PORT || 5008;
-server.listen(PORT);
-console.log(`Server running on port ${PORT}`);
+
+http.listen(5008, function() {
+    console.log(`Listening on port : 5008`);
+});
