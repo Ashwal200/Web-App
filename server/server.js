@@ -15,11 +15,8 @@ app.use(express.static('public', {
   }));
 // Enable CORS for all origins
 app.use(cors());
+const staticPath = path.resolve(__dirname , "." , "build");
 
-// Route to serve the index.html file from the build directory
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
 
 const connectedClients = new Map(); // Map to track connected clients
 
@@ -47,7 +44,12 @@ io.on('connection', function(socket) {
     });
 });
 
-
+// Route to serve the index.html file from the build directory
+app.get('*', (req, res) => {
+    app.use(express.static(staticPath));
+    const indexFile = res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    return res.sendFile(indexFile);
+});
 
 http.listen(5008, function() {
     console.log(`Listening on port : 5008`);
