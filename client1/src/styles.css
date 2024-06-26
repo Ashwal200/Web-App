@@ -1,65 +1,72 @@
+/* Lobby stylesheet */
+.background-container {
+  background-image: url('./assets/background.png');
+  right: 200px;
+  background-size: cover;
+  height: 1200px;
+  background-repeat: no-repeat;
+  /* Optionally, add more styles for the component */
+  padding: 120px;
+  border-radius: 0px;
+  background-position: center center;
+}
 .container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   font-size: large;
 }
-
 ul {
   list-style-type: none;
   padding: 0;
 }
-
 ul li {
   margin-bottom: 10px;
 }
-
+.codeblocks-container {
+  width: 400px;
+  padding: 20px;
+  margin-left: 150px;
+}
+.codeblocks-container button {
+  padding: 2px 20px;
+  margin-bottom: 0px;
+  background-color: #366A68;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: x-large;
+}
+.codeblocks-container button:hover{
+  background-color: #FFFBF8;
+  border-radius: 5px;
+  color: #366A68;
+}
 .add-code-block {
   margin-top: 20px;
-  margin-right: 200px;
+  margin-right: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: x-large;
 }
 
-.add-code-block button {
-  padding: 10px 20px;
-  margin-top: 20px;
-  background-color: #366A68;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  border-radius: 15px;
-  font-size: x-large;
-}
-
-.add-code-block button:hover {
-  background-color: #E7F0E7;
-  border-radius: 5px;
-  color: #366A68;
-}
-.code-container {
-  width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  margin-left: 150px;
-  border: 1px solid #fff;
-  border-radius: 5px;
-  background-color: #fff;
-}
 .scrollable-section {
-  max-height: 200px; 
+  max-height: 300px; 
   overflow-y: auto; 
 }
 
+/* Add code block stylesheet */
+
 .add-code-block-container {
-  max-width: 800px;
+  width: 80%;
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #f9f9f9;
+  font-size: x-large;
+  flex-direction: column;
+  align-items: center;
 }
 
 .add-code-block-form {
@@ -77,11 +84,6 @@ ul li {
   margin-bottom: 15px;
   max-width: 800px;
 }
-
-label {
-  font-weight: bold;
-}
-
 input,
 textarea {
   bottom: 10px;
@@ -93,6 +95,40 @@ textarea {
   font-size: x-large;
   
 }
+
+
+
+.btn-submit {
+  margin-top: 20px;
+  padding: 20px;
+  width: 20%;
+  margin-left: 430px;
+  background-color: #366A68;
+  color: #fff;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: xx-large;
+}
+.btn-submit:hover {
+  background-color: #FFFBF8;
+  color: #366A68;
+}
+.btn-submit-back {
+  margin-top: -50px;
+  margin-left: 10px;
+  color: #366A68;
+  border-radius: 50px;
+  font-size: 50px;
+}
+
+/* Code block stylesheet */
+.form-group-codeblock {
+  margin-left: 250px;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  max-width: 800px;
+}
 .textarea-code {
   bottom: 10px;
   width: 100%;
@@ -102,18 +138,7 @@ textarea {
   box-sizing: border-box;
   font-size: x-large;
   height: 500px;
-}
-
-.btn-submit {
-  margin-top: 20px;
-  padding: 20px;
-  width: 30%;
-  margin-left: 200px;
-  background-color: #366A68;
-  color: #fff;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
+  background-color: #FFFBF8;
 }
 .btn-submit-save {
   margin-top: 20px;
@@ -127,25 +152,13 @@ textarea {
   cursor: pointer;
   font-size: 20px;
 }
-.btn-submit-back {
-  margin-top: 20px;
-  margin-left: 10px;
-  color: #366A68;
-  border-radius: 50px;
-  font-size: 50px;
-}
-.btn-submit-back:hover {
-  background-color: #E7F0E7;
-  color: #366A68;
-}
+
+
 .btn-submit-save:hover {
-  background-color: #E7F0E7;
+  background-color: #FFFBF8;
   color: #366A68;
 }
-.btn-submit:hover {
-  background-color: #E7F0E7;
-  color: #366A68;
-}
+
 
 .head {
   margin-bottom: 10px;
@@ -153,3 +166,15 @@ textarea {
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   font-weight: bold;
 }
+.popup-style {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 8rem;
+  background-color: #FFFBF8;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { DataBase } from '../back/DataBase';
+  import React, { useEffect, useState } from 'react';
+import { DataBase } from '../db/DataBase';
 import { Link, useLocation } from 'react-router-dom';
 import { HiArrowCircleLeft } from "react-icons/hi";
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -10,6 +10,7 @@ import socket from '../socket';
 const CodeBlock = () => {
     const [code, setCode] = useState('');
     const [title, setTitle] = useState('');
+    const [complete, setComplete] = useState(false);
     const location = useLocation();
     // Get the query parameters from the URL
     const params = new URLSearchParams(location.search);
@@ -20,11 +21,15 @@ const CodeBlock = () => {
 
         const fetchData = async () => {
             try {
-                
-                const data = await DataBase.getCode(codeBlockId);
+                if (complete) {
+                    const timer = setTimeout(() => {
+                      setComplete(false);
+                    }, 3000);
+                    return () => clearTimeout(timer);
+                }
+                const data = await DataBase.getData(codeBlockId);
                 setCode(data.code);
                 setTitle(data.title);
-                console.log(role);
             } catch (error) {
                 console.error('Error fetching code block:', error);
             }
@@ -43,28 +48,35 @@ const CodeBlock = () => {
         };
 
 
-    }, [codeBlockId]);
+    }, [codeBlockId , complete]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await DataBase.updateDocument(codeBlockId, code);
+            await DataBase.updateData(codeBlockId, code);
+            const chackSolution = await DataBase.getStatus(codeBlockId);
+            setComplete(chackSolution);
         } catch (error) {
             console.error('Error adding code block:', error);
         }
     };
 
     return (
-        <div>
+        <div className='background-container'>
             <Link to="/">
                 <HiArrowCircleLeft className="btn-submit-back"></HiArrowCircleLeft>
             </Link>
-            <div className="form-group-code">
+            <div className="form-group-codeblock">
                 <div className='head'> Code: {title}</div>
                 {role === 'student' ? (
                     <>
                         <textarea className='textarea-code' id="code" value={code} onChange={(e) => { setCode(e.target.value); socket.emit('updatedCode', e.target.value); }} required />
                         <button onClick={handleSubmit} className="btn-submit-save"> Save </button>
+                        {complete && (
+                        <div className='popup-style'>
+                        <span role="img" aria-label="smiley">😊</span>
+                        </div>
+                    )}
                     </>
                 ) : (
                     <SyntaxHighlighter language="javascript" style={docco}>

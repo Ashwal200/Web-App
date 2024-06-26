@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles.css';
-import { DataBase } from '../back/DataBase'
+import { DataBase } from '../db/DataBase'
 import socket from '../socket';
+import { FaPlus } from "react-icons/fa";
 
 const Lobby = () => {
     const [codeBlocks, setCodeBlocks] = useState([]);
@@ -11,7 +12,7 @@ const Lobby = () => {
         const fetchCodeBlocks = async () => {
             try {
                 const querySnapshot = await DataBase.getDocsList();
-                const codeBlocksList = querySnapshot.docs.map(doc => ({ id: doc.id, title: doc.data().title, data: doc.data().data , mentor : doc.data().mentor}));
+                const codeBlocksList = querySnapshot.docs.map(doc => ({ id: doc.id, title: doc.data().title, data: doc.data().data, mentor: doc.data().mentor }));
                 setCodeBlocks(codeBlocksList);
             } catch (error) {
                 console.error('Error fetching code blocks:', error);
@@ -24,39 +25,42 @@ const Lobby = () => {
         };
     }, []);
 
-    const handleCodeBlockClick = async (codeBlockId , mentor) => {
+    const handleCodeBlockClick = async (codeBlockId, mentor) => {
         // Determine role (mentor or student) and navigate to the code block page
         if (mentor === 'true') {
-          await DataBase.addMentor(codeBlockId , 'false')
-          // Navigate to the code block page with the role 'mentor'
-          window.location.href = `/codeblock/${codeBlockId}?role=mentor`;
+            await DataBase.editMentor(codeBlockId, 'false')
+            // Navigate to the code block page with the role 'mentor'
+            window.location.href = `/codeblock/${codeBlockId}?role=mentor`;
         } else {
-          // Navigate to the code block page with the role 'student'
-          window.location.href = `/codeblock/${codeBlockId}?role=student`;
+            // Navigate to the code block page with the role 'student'
+            window.location.href = `/codeblock/${codeBlockId}?role=student`;
         }
-      };
+    };
 
     return (
-        <div className="container">
-            <div className="code-container">
-                <h1>Choose code block</h1>
-                <div className="scrollable-section">
-                    <ul>
-                        {codeBlocks.map(block => (
-                            <li key={block.id}>
-                                <button onClick={() => handleCodeBlockClick(block.id , block.mentor)}>{block.title}</button>
-                            </li>
-                        ))}
-                    </ul>
+        <div className="background-container">
+            <div className="container">
+                <div className="codeblocks-container">
+                    <h1 style={{ color: '#403029' }}>Choose code block</h1>
+                    <div className="scrollable-section">
+                        <ul>
+                            {codeBlocks.map(block => (
+                                <li key={block.id}>
+                                    <button onClick={() => handleCodeBlockClick(block.id, block.mentor)}>{block.title}</button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+                <div className="add-code-block">
+                    <h2 style={{ color: '#403029' }}>Add Code Block</h2>
+                    <Link to="/add">
+                        <FaPlus style={{ color: '#366A68', fontSize: '40px' }} />
+                    </Link>
                 </div>
             </div>
-            <div className="add-code-block">
-                <h2>Add Code Block</h2>
-                <Link to="/add">
-                    <button>Add</button>
-                </Link>
-            </div>
         </div>
+
     );
 };
 
