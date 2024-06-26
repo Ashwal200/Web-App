@@ -39,8 +39,11 @@ const CodeBlock = () => {
 
 
         // Listen for updated code from the server
-        socket.on('newUpdatedCode', (updatedCode) => {
-            setCode(updatedCode);
+        socket.on('newUpdatedCode', (updatedCode , id) => {
+            if (id === codeBlockId) {
+                setCode(updatedCode);
+            }
+            
         });
 
         return () => {
@@ -70,7 +73,7 @@ const CodeBlock = () => {
                 <div className='head'> Code: {title}</div>
                 {role === 'student' ? (
                     <>
-                        <textarea className='textarea-code' id="code" value={code} onChange={(e) => { setCode(e.target.value); socket.emit('updatedCode', e.target.value); }} required />
+                        <textarea className='textarea-code' id="code" value={code} onChange={(e) => { setCode(e.target.value); socket.emit('updatedCode', e.target.value , codeBlockId); }} required />
                         <button onClick={handleSubmit} className="btn-submit-save"> Save </button>
                         {complete && (
                             <div className='popup-style'>
@@ -78,7 +81,7 @@ const CodeBlock = () => {
                             </div>
                         )}
                         </>
-                        ) : (
+                        ) : ( 
                         <SyntaxHighlighter language="javascript" style={docco}>
                             {code}
                         </SyntaxHighlighter>

@@ -25,8 +25,8 @@ io.on('connection', (socket) => {
   // Store client information when a new client connects
   connectedClients.set(socket.id, { id: socket.id });
 
-  socket.on("updatedCode", function (data) {
-    io.emit("newUpdatedCode", data);
+  socket.on("updatedCode", function (data , id) {
+    io.emit("newUpdatedCode", data , id);
   });
 
   socket.on('disconnect', () => {
