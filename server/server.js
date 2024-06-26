@@ -16,8 +16,6 @@ app.use(express.static('public', {
   }));
 // Enable CORS for all origins
 app.use(cors());
-const staticPath = path.resolve(__dirname , "." , "build");
-
 
 const connectedClients = new Map(); // Map to track connected clients
 
@@ -45,18 +43,12 @@ io.on('connection', function(socket) {
     });
 });
 
-// // Route to serve the index.html file from the build directory
-// app.get('*', (req, res) => {
-//     app.use(express.static(staticPath));
-//     const indexFile = res.sendFile(path.join(__dirname, 'build', 'index.html'));
-//     return res.sendFile(indexFile);
-// });
+
 // production code
 if (process.env.NODE_ENV === "production") {
     const publicPath = path.resolve(__dirname, ".", "build");
     const filePath = path.join(__dirname, ".", "build", "index.html");
     app.use(express.static(publicPath));
-  
     app.get("*", (req, res) => {
       return res.sendFile(filePath);
     });
