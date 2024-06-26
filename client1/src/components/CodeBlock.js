@@ -24,8 +24,6 @@ const CodeBlock = () => {
                 const data = await DataBase.getCode(id);
                 setCode(data.code);
                 setTitle(data.title)
-
-
             } catch (error) {
                 console.error('Error fetching code block:', error);
             }
@@ -37,8 +35,11 @@ const CodeBlock = () => {
         socket.on('newUpdatedCode', (updatedCode) => {
             setCode(updatedCode);
         });
+        return () => {
+            socket.off('newUpdatedCode');
+        };
 
-    }, []);
+    }, [flag , id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

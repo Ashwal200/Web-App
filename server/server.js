@@ -1,36 +1,28 @@
-const app = require('express')();
-const express = require('express')
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-const cors = require('cors'); // Import the cors middleware
-const path = require('path');
-const port = process.env.PORT || 5000;
+// server.js (backend)
 
-// Serve static files with correct MIME types
-app.use(express.static('public', {
-    setHeaders: (res, path, stat) => {
-      if (path.endsWith('.css')) {
-        res.set('Content-Type', 'text/css');
-      }
-    }
-  }));
-// Enable CORS for all origins
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const cors = require('cors');
+
+const app = express();
 app.use(cors());
+
+const server = http.createServer(app);
+const io = socketIo(server, {
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+        credentials: true
+    }
+});   
 
 const connectedClients = new Map(); // Map to track connected clients
 
-io.on('connection', function(socket) {
+io.on('connection', (socket)=> {
     
     // Store client information when a new client connects
     connectedClients.set(socket.id, { id: socket.id });
-
-    socket.on('joinRoom', (room) => {
-        // Associate client's socket ID with the specified room
-        // You can store additional information about the client in the room object if needed
-        // For simplicity, we'll just associate the socket ID with the room name
-        socket.join(room);
-        console.log(`Client ${socket.id} joined room: ${room}`);
-    });
 
     socket.on("updatedCode" , function(data) {
         io.emit("newUpdatedCode" , data)
@@ -43,14 +35,5 @@ io.on('connection', function(socket) {
     });
 });
 
-
-// production code
-if (process.env.NODE_ENV === "production") {
-    const publicPath = path.resolve(__dirname, ".", "build");
-    const filePath = path.join(__dirname, ".", "build", "index.html");
-    app.use(express.static(publicPath));
-    app.get("*", (req, res) => {
-      return res.sendFile(filePath);
-    });
-  }
-http.listen(port, () => console.log(`server started: listening on ${port}`));
+const port = 5010
+server.listen(port, () => console.log(`server started: listening on ${port}`));
