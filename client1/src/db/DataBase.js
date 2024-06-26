@@ -41,6 +41,7 @@ export const DataBase = {
         title: docSnapshot.data().title,
         code: docSnapshot.data().code,
         mentor: mentorID,
+        solution: docSnapshot.data().solution
       }, { merge: true });
       console.log('Document updated successfully!');
     } catch (error) {
@@ -78,7 +79,9 @@ export const DataBase = {
     try {
       const snapshot = await getDocs(dbCollection);
       const document = snapshot.docs.find(doc => doc.id === id);
-      return data === document.data().solution;
+      const prettier = require("prettier");
+  
+      return prettier.format(data, { parser: "babel" }) === prettier.format(document.data().solution, { parser: "babel" });
     } catch (error) {
       console.error('Error checking the solution:', error);
     }

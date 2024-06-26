@@ -1,4 +1,4 @@
-  import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataBase } from '../db/DataBase';
 import { Link, useLocation } from 'react-router-dom';
 import { HiArrowCircleLeft } from "react-icons/hi";
@@ -23,7 +23,7 @@ const CodeBlock = () => {
             try {
                 if (complete) {
                     const timer = setTimeout(() => {
-                      setComplete(false);
+                        setComplete(false);
                     }, 3000);
                     return () => clearTimeout(timer);
                 }
@@ -48,13 +48,13 @@ const CodeBlock = () => {
         };
 
 
-    }, [codeBlockId , complete]);
+    }, [codeBlockId, complete]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await DataBase.updateData(codeBlockId, code);
-            const chackSolution = await DataBase.getStatus(codeBlockId);
+            const chackSolution = await DataBase.getStatus(codeBlockId, code);
             setComplete(chackSolution);
         } catch (error) {
             console.error('Error adding code block:', error);
@@ -73,18 +73,18 @@ const CodeBlock = () => {
                         <textarea className='textarea-code' id="code" value={code} onChange={(e) => { setCode(e.target.value); socket.emit('updatedCode', e.target.value); }} required />
                         <button onClick={handleSubmit} className="btn-submit-save"> Save </button>
                         {complete && (
-                        <div className='popup-style'>
-                        <span role="img" aria-label="smiley">😊</span>
-                        </div>
-                    )}
-                    </>
-                ) : (
-                    <SyntaxHighlighter language="javascript" style={docco}>
-                        {code}
-                    </SyntaxHighlighter>
+                            <div className='popup-style'>
+                                <span role="img" aria-label="smiley">😊</span>
+                            </div>
+                        )}
+                        </>
+                        ) : (
+                        <SyntaxHighlighter language="javascript" style={docco}>
+                            {code}
+                        </SyntaxHighlighter>
                 )}
-            </div>
+                    </div>
         </div>
-    );
+            );
 };
-export default CodeBlock;
+            export default CodeBlock;
