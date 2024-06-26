@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { DataBase } from '../back/DataBase';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { HiArrowCircleLeft } from "react-icons/hi";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -9,47 +8,52 @@ import socket from '../socket';
 
 
 const CodeBlock = () => {
-    const { id } = useParams();
     const [code, setCode] = useState('');
     const [title, setTitle] = useState('');
-    const [role, setRole] = useState(false);
-    const [flag, setflag] = useState(true);
+    const location = useLocation();
+    // Get the query parameters from the URL
+    const params = new URLSearchParams(location.search);
+    const codeBlockId = location.pathname.split('/').pop();
+    const role = params.get('role');
+
     useEffect(() => {
+
         const fetchData = async () => {
             try {
-                if (flag) {
-                    setRole(true);
-                    setflag(false);
-                }
-                const data = await DataBase.getCode(id);
+                
+                const data = await DataBase.getCode(codeBlockId);
                 setCode(data.code);
-                setTitle(data.title)
+                setTitle(data.title);
+                console.log(role);
             } catch (error) {
                 console.error('Error fetching code block:', error);
             }
         };
-        socket.emit('joinRoom', "Lobby");
+
         fetchData();
+
 
         // Listen for updated code from the server
         socket.on('newUpdatedCode', (updatedCode) => {
             setCode(updatedCode);
         });
+
         return () => {
             socket.off('newUpdatedCode');
         };
 
-    }, [flag , id]);
+
+    }, [codeBlockId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await DataBase.updateDocument(id, code);
-            window.location.reload();
+            await DataBase.updateDocument(codeBlockId, code);
         } catch (error) {
             console.error('Error adding code block:', error);
         }
     };
+
     return (
         <div>
             <Link to="/">
@@ -57,7 +61,7 @@ const CodeBlock = () => {
             </Link>
             <div className="form-group-code">
                 <div className='head'> Code: {title}</div>
-                {role ? (
+                {role === 'student' ? (
                     <>
                         <textarea className='textarea-code' id="code" value={code} onChange={(e) => { setCode(e.target.value); socket.emit('updatedCode', e.target.value); }} required />
                         <button onClick={handleSubmit} className="btn-submit-save"> Save </button>
@@ -67,9 +71,6 @@ const CodeBlock = () => {
                         {code}
                     </SyntaxHighlighter>
                 )}
-                <SyntaxHighlighter language="javascript" style={docco}>
-                    {code}
-                </SyntaxHighlighter>
             </div>
         </div>
     );

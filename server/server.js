@@ -11,29 +11,33 @@ app.use(cors());
 
 const server = http.createServer(app);
 const io = socketIo(server, {
-    cors: {
-        origin: '*',
-        methods: ['GET', 'POST'],
-        credentials: true
-    }
-});   
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
 
 const connectedClients = new Map(); // Map to track connected clients
 
-io.on('connection', (socket)=> {
-    
-    // Store client information when a new client connects
-    connectedClients.set(socket.id, { id: socket.id });
+io.on('connection', (socket) => {
 
-    socket.on("updatedCode" , function(data) {
-        io.emit("newUpdatedCode" , data)
-    });
+  // Store client information when a new client connects
+  connectedClients.set(socket.id, { id: socket.id });
 
-    socket.on('disconnect', () => {
-        // Remove client from the tracking data structure when they disconnect
-        connectedClients.delete(socket.id);
-        console.log('Client disconnected:', socket.id);
-    });
+  socket.on("updatedCode", function (data) {
+    io.emit("newUpdatedCode", data);
+  });
+
+  socket.on('disconnect', () => {
+    // Remove client from the tracking data structure when they disconnect
+    connectedClients.delete(socket.id);
+    console.log('Client disconnected:', socket.id);
+  });
+  socket.on('reconnect', () => {
+    console.log('Client reconnected:', socket.id);
+  });
+  
 });
 
 const publicPath = path.resolve(__dirname, ".", "build");

@@ -1,18 +1,10 @@
 import React, { useState , useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { DataBase } from '../back/DataBase';
-import socket from '../socket'; 
 
 const AddCodeBlock = () => {
     const [title, setTitle] = useState('');
     const [code, setCode] = useState('');
-    useEffect(() => {
-        socket.emit('joinRoom', "AddCodeBock");
-
-        return () => {
-            socket.disconnect();
-        };
-    }, []);
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {

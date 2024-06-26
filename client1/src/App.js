@@ -8,12 +8,12 @@ import io from 'socket.io-client';
 const socket = io(); // Establish socket connection
 
 function App() {
-    useEffect(() => {
-        return () => {
-            socket.disconnect(); // Clean up socket connection on component unmount
-        };
-    }, []);
 
+    // useEffect(() => {
+    //     return () => {
+    //         socket.disconnect(); // Clean up socket connection on component unmount
+    //     };
+    // }, []);
     return (
         <Router>
             <Routes>
