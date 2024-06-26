@@ -35,5 +35,13 @@ io.on('connection', (socket)=> {
     });
 });
 
+const publicPath = path.resolve(__dirname, ".", "build");
+const filePath = path.join(__dirname, ".", "build", "index.html");
+app.use(express.static(publicPath));
+
+app.get("*", (req, res) => {
+  return res.sendFile(filePath);
+});
+
 const port = 5010
 server.listen(port, () => console.log(`server started: listening on ${port}`));
