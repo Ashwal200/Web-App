@@ -24,7 +24,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://web-app-z7wu.onrender.com",
+  "proxy": "http://localhost:5008/",
   "eslintConfig": {
     "extends": [
       "react-app",
