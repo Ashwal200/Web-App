@@ -5,13 +5,15 @@ import CodeBlock from './components/CodeBlock';
 import AddCodeBlock from './components/AddCodeBlock';
 import io from 'socket.io-client';
 
-const socket = io(); // Establish socket connection
+// Create socket connection
+const socket = io(); 
 
 function App() {
 
     useEffect(() => {
         return () => {
-            socket.disconnect(); // Clean up socket connection on component unmount
+            // Clean up socket connection on component unmount
+            socket.disconnect(); 
         };
     }, []);
     return (

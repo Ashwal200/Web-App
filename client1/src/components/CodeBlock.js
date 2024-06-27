@@ -1,69 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import { DataBase } from '../db/DataBase';
-import { Link, useLocation } from 'react-router-dom';
-import { HiArrowCircleLeft } from "react-icons/hi";
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import socket from '../socket';
+import { DataBase } from '../db/DataBase'; 
+import { Link, useLocation } from 'react-router-dom'; 
+import { HiArrowCircleLeft } from "react-icons/hi"; 
+import SyntaxHighlighter from 'react-syntax-highlighter'; 
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs'; 
+import socket from '../socket'; 
 
-
+// Functional component for Code Block page
 const CodeBlock = () => {
-    const [code, setCode] = useState('');
-    const [title, setTitle] = useState('');
-    const [complete, setComplete] = useState(false);
-    const location = useLocation();
-    // Get the query parameters from the URL
-    const params = new URLSearchParams(location.search);
-    const codeBlockId = location.pathname.split('/').pop();
-    const role = params.get('role');
+    const [code, setCode] = useState(''); 
+    const [title, setTitle] = useState(''); 
+    const [complete, setComplete] = useState(false); 
+    const location = useLocation(); // Hook to access the current location object
+    const params = new URLSearchParams(location.search); // Extracting query parameters from the URL
+    const codeBlockId = location.pathname.split('/').pop(); // Extracting the code block ID from the URL path
+    const role = params.get('role'); // Getting the role parameter from query params
 
+    // Effect to fetch code block data and subscribe to socket events
     useEffect(() => {
-
+        // Function to fetch initial data of the code block
         const fetchData = async () => {
             try {
-                if (complete) {
-                    const timer = setTimeout(() => {
-                        setComplete(false);
-                    }, 3000);
-                    return () => clearTimeout(timer);
-                }
+                // Fetching code block data from Firestore using the codeBlockId
                 const data = await DataBase.getData(codeBlockId);
-                setCode(data.code);
+                setCode(data.code); 
                 setTitle(data.title);
             } catch (error) {
-                console.error('Error fetching code block:', error);
+                console.error('Error fetching code block:', error); 
             }
         };
 
-        fetchData();
+        fetchData(); 
 
-
-        // Listen for updated code from the server
-        socket.on('newUpdatedCode', (updatedCode , id) => {
+        // Subscribing to 'newUpdatedCode' event from socket server
+        socket.on('newUpdatedCode', (updatedCode, id) => {
             if (id === codeBlockId) {
-                setCode(updatedCode);
+                setCode(updatedCode); // Updating code state with new updated code received from server
             }
-            
         });
 
         return () => {
-            socket.off('newUpdatedCode');
+            socket.off('newUpdatedCode'); // Unsubscribing from 'newUpdatedCode' event
         };
+    }, [codeBlockId]);
 
-
-    }, [codeBlockId, complete]);
-
+    // Function to handle code submission
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Preventing default form submission behavior
         try {
+            // Updating code block data in Firestore with the current code
             await DataBase.updateData(codeBlockId, code);
-            const chackSolution = await DataBase.getStatus(codeBlockId, code);
-            setComplete(chackSolution);
+            // Checking solution status from Firestore 
+            const checkSolution = await DataBase.getStatus(codeBlockId, code);
+            setComplete(checkSolution); 
         } catch (error) {
-            console.error('Error adding code block:', error);
+            console.error('Error adding code block:', error); 
         }
     };
 
+    // JSX returned by the component
     return (
         <div className='background-container'>
             <Link to="/">
@@ -73,21 +68,24 @@ const CodeBlock = () => {
                 <div className='head'> Code: {title}</div>
                 {role === 'student' ? (
                     <>
-                        <textarea className='textarea-code' id="code" value={code} onChange={(e) => { setCode(e.target.value); socket.emit('updatedCode', e.target.value , codeBlockId); }} required />
+                        <textarea className='textarea-code' id="code" value={code} 
+                                  onChange={(e) => { setCode(e.target.value); socket.emit('updatedCode', e.target.value, codeBlockId); }} 
+                                  required />
                         <button onClick={handleSubmit} className="btn-submit-save"> Save </button>
                         {complete && (
                             <div className='popup-style'>
                                 <span role="img" aria-label="smiley">😊</span>
                             </div>
                         )}
-                        </>
-                        ) : ( 
-                        <SyntaxHighlighter language="javascript" style={docco}>
-                            {code}
-                        </SyntaxHighlighter>
+                    </>
+                ) : (
+                    <SyntaxHighlighter language="javascript" style={docco}>
+                        {code}
+                    </SyntaxHighlighter>
                 )}
-                    </div>
+            </div>
         </div>
-            );
+    );
 };
-            export default CodeBlock;
+
+export default CodeBlock;
