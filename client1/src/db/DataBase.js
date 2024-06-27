@@ -92,20 +92,18 @@ export const DataBase = {
 
       if (!document || !document.data() || !document.data().solution) {
         throw new Error(`Document with ID ${id} does not exist or solution is missing.`);
-    }
-    
+      }
       // Remove comments (single-line and multi-line)
       const cleanedSolution = document.data().solution.replace(/\/\/.*|\/\*[^]*?\*\//g, '');
 
       // Normalize whitespace (replace multiple spaces with single space)
       const normalizedSolution = cleanedSolution.replace(/\s+/g, ' ').trim();
- 
+
       const cleanedData = data.replace(/\/\/.*|\/\*[^]*?\*\//g, '');
 
       const normalizedData = cleanedData.replace(/\s+/g, ' ').trim();
 
-      console.log("the compare - " , normalizedData === normalizedSolution);
-      return normalizedData === normalizedSolution; 
+      return normalizedData === normalizedSolution;
 
     } catch (error) {
       console.error('Error checking the solution:', error);

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; 
 import { DataBase } from '../db/DataBase'; 
-import { HiArrowCircleLeft } from "react-icons/hi"; 
+import { HiArrowCircleLeft } from "react-icons/hi";
+import { CgAsterisk } from "react-icons/cg"; 
 
 // Functional component for adding a new code block page
 const AddCodeBlock = () => {
@@ -34,16 +35,16 @@ const AddCodeBlock = () => {
             <div className="add-code-block-container">
                 <form className="add-code-block-form" onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <div className='head'> Title</div>
+                        <div className='head'> Title<CgAsterisk color='darkred'/></div>
                         <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
                     </div>
                     <div className="form-group">
                         <div className='head'> Code:</div>
-                        <textarea id="code" value={code} onChange={(e) => setCode(e.target.value)} required />
+                        <textarea className='textarea-hight' id="code" value={code} onChange={(e) => setCode(e.target.value)} required />
                     </div>
                     <div className="form-group">
                         <div className='head'> Solution:</div>
-                        <textarea id="solution" value={solution} onChange={(e) => setSolution(e.target.value)} required />
+                        <textarea className='textarea-hight' id="solution" value={solution} onChange={(e) => setSolution(e.target.value)} required />
                     </div>
                     <button type="submit" className="btn-submit"> Submit </button>
                 </form>

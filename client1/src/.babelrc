@@ -1,7 +1,0 @@
-{
-    "presets": [
-      "@babel/preset-env", // Transpile modern JavaScript syntax
-      "@babel/preset-react" // Transpile JSX syntax (if using React)
-    ],
-    "plugins": ["@babel/plugin-proposal-class-properties"]
-  }
