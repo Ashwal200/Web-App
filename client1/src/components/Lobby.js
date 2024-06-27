@@ -37,6 +37,7 @@ const Lobby = () => {
         if (mentor === 'true') {
             // Setting mentor status to false in Firestore to address that the mentor is in the code block
             await DataBase.editMentor(codeBlockId); 
+            window.location.reload()
             // Navigate to the code block page with the role 'mentor'
             window.location.href = `/codeblock/${codeBlockId}?role=mentor`;
         } else {
