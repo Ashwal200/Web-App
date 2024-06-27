@@ -35,7 +35,7 @@ const Lobby = () => {
     const handleCodeBlockClick = async (codeBlockId) => {
         try {
             const data = await DataBase.getData(codeBlockId)
-            const mentor = data.data().mentor
+            const mentor = data.mentor
             // Determine role (mentor or student) and navigate to the code block page
             if (mentor === 'true') {
                 // Setting mentor status to false in Firestore to address that the mentor is in the code block
@@ -62,7 +62,7 @@ const Lobby = () => {
                         <ul>
                             {codeBlocks.map(block => (
                                 <li key={block.id}>
-                                    <button onClick={() => handleCodeBlockClick(block.id, block.mentor)}>
+                                    <button onClick={() => handleCodeBlockClick(block.id)}>
                                         {block.title}
                                     </button>
                                 </li>
