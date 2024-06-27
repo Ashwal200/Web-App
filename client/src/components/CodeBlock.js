@@ -8,7 +8,6 @@ import socket from '../socket';
 
 // Functional component for Code Block page
 const CodeBlock = () => {
-    window.location.reload();
     const [code, setCode] = useState('');
     const [title, setTitle] = useState('');
     const [complete, setComplete] = useState(false);

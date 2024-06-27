@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles.css';
-import { DataBase } from '../db/DataBase'; 
+import { DataBase } from '../db/DataBase';
 import { FaPlus } from "react-icons/fa";
 
 // Functional component for the Lobby page
@@ -14,7 +14,7 @@ const Lobby = () => {
         const fetchCodeBlocks = async () => {
             try {
                 // Fetching all documents from Firestore
-                const querySnapshot = await DataBase.getDocsList(); 
+                const querySnapshot = await DataBase.getDocsList();
 
                 // Mapping Firestore documents to code block objects to show them on the page
                 const codeBlocksList = querySnapshot.docs.map(doc => ({
@@ -23,27 +23,34 @@ const Lobby = () => {
                     data: doc.data().data,
                     mentor: doc.data().mentor
                 }));
-                setCodeBlocks(codeBlocksList); 
+                setCodeBlocks(codeBlocksList);
             } catch (error) {
                 console.error('Error fetching code blocks:', error);
             }
         };
-        fetchCodeBlocks(); 
-    }, []); 
+        fetchCodeBlocks();
+    }, []);
 
     // Function to handle clicking on a code block
-    const handleCodeBlockClick = async (codeBlockId, mentor) => {
-        // Determine role (mentor or student) and navigate to the code block page
-        if (mentor === 'true') {
-            // Setting mentor status to false in Firestore to address that the mentor is in the code block
-            await DataBase.editMentor(codeBlockId); 
-            
-            // Navigate to the code block page with the role 'mentor'
-            window.location.href = `/codeblock/${codeBlockId}?role=mentor`;
-        } else {
-            // Navigate to the code block page with the role 'student'
-            window.location.href = `/codeblock/${codeBlockId}?role=student`;
+    const handleCodeBlockClick = async (codeBlockId) => {
+        try {
+            const data = await DataBase.getData(codeBlockId)
+            const mentor = data.data().mentor
+            // Determine role (mentor or student) and navigate to the code block page
+            if (mentor === 'true') {
+                // Setting mentor status to false in Firestore to address that the mentor is in the code block
+                await DataBase.editMentor(codeBlockId);
+
+                // Navigate to the code block page with the role 'mentor'
+                window.location.href = `/codeblock/${codeBlockId}?role=mentor`;
+            } else {
+                // Navigate to the code block page with the role 'student'
+                window.location.href = `/codeblock/${codeBlockId}?role=student`;
+            }
+        } catch (error) {
+            console.error('Error fetching mentor:', error);
         }
+
     };
 
     return (
